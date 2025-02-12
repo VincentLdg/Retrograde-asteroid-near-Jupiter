@@ -6,11 +6,12 @@ This type of orbit is unusual, as it is generally unstable. This is why [M. Conn
 
 In their article, they show that the asteroid is in **resonance with Jupiter**, which enables it to temporarily stabilise its orbit. Their study details its orbital parameters, which we are going to analyse in order to find and verify their results.
 
-![Orbit Animation](orbit_animation2.gif)
+<p align="center">
+<img src="orbit_animation2.gif" style="width:60%; height:auto;" alt="Orbit Animation"></p>
+ 
 
-
-Here are the orbital parameters of asteroid 2007 VW266 on 5 November 2013. 
-
+## 1. Asteroid'a orbit analysis
+### Asteroid's orbital parameters on 5 November 2013
 | Element | Name                  | Value          | Error         |
 |---------|-----------------------|---------------|--------------|
 | Epoch   | -                     | JD 2456600.5  | -            |
@@ -21,6 +22,22 @@ Here are the orbital parameters of asteroid 2007 VW266 on 5 November 2013.
 | ω       | Argument of perihelion| 226.107°      | 0.0501°      |
 | Ω       | Longitude of node     | 276.509°      | 0.00114°     |
 | M       | Mean anomaly          | 146.88°       | 0.604°       |
+
+### Evolution of the semi-major axis, eccentricity and the inclination
+
+To understand the asteroid's orbit, we can first study the evolution of the orbital parameter over time. To do that we propagate the orbit using RK4 algorithm considering the influence of Jupiter, Earth, and Mars.
+
+We compute the the orbital elements for the next 10000 years, this is what we obtain:
+<p align="center">
+<img src="orbital_param.png" style="width:60%; height:auto;" alt="Orbital parametrs evolution"></p>
+ 
+We observe that the asteroid's orbit seems stable for the next 7000 years and after that it is instable. 
+
+We can zoom on the first 2000 years.
+<p align="center">
+<img src="orbital_param_zoomed.png" style="width:60%; height:auto;" alt="Orbital parametrs evolution"></p>
+
+
 
 - résumé de l'asteroid
 - GIF

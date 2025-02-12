@@ -60,7 +60,7 @@ def Jupiter_circ(t):
     y=5.2*np.sin(2*np.pi*t/Tj) 
     return  np.array([x,0,y,0,0,0])
 
-def Resolution(U0,t0,mat_masse,h,nb_its,planet):
+def Resolution(U0,t_start,t_end,h,mat_masse,planet):
     """
     This function calculates for a given duration :
         • U: the position of the asteroid
@@ -69,7 +69,9 @@ def Resolution(U0,t0,mat_masse,h,nb_its,planet):
         • I: the inclination 
         • P: the position of other object
     """
-    nb_pts=int(np.round((nb_its+abs(t0))/h))
+    t=np.arange(t_start,t_end + 1,h)
+    nb_pts=len(t)
+    print(nb_pts)
     U=np.zeros((6,nb_pts))
     A=np.zeros((nb_pts))
     E=np.zeros((nb_pts))
@@ -84,15 +86,12 @@ def Resolution(U0,t0,mat_masse,h,nb_its,planet):
     I[0]=Inclinaison(pos,vit)
 
     for j in range(len(planet)):
-        r=planet[j](t0)
+        r=planet[j](t_start)
         P[0+3*j,0]=r[0]
         P[1+3*j,0]=r[2]
         P[2+3*j,0]=r[4]
     
-    t=np.arange(t0,nb_its,h)
-    
     for i in tqdm(range(1,nb_pts)):
-
         mat_obj=np.array([0,0,0,0,0,0])
         for j in range(len(planet)):
             r=planet[j](t[i])
@@ -270,23 +269,29 @@ def Plot_trajectory3d(U,P,planet,name):
     ax.set_xlabel("X")
     ax.set_ylabel("Y")
 
-def Plot_orbital_param(A,E,I,nb_its,h,t0):
+def Plot_orbital_param(A,E,I,t_start,t_end,h):
+
+    print(t_start)
+    time_vector = np.arange(t_start,t_end + 1,h)/365.25
     fig,(ax1,ax2,ax3)=plt.subplots(3)
     fig.tight_layout(pad=3.3)
-    ax1.plot(np.arange(t0,nb_its,h)/365.25,A,'k')
-    ax1.set_title("Semimajor axis over time")
+    ax1.plot(time_vector,A,'k')
+    ax1.set_title("Semi-major axis")
     ax1.set_xlabel("years")
-    ax1.set_ylabel("a")
+    ax1.set_ylabel("a [AU]")
+    ax1.set_xlim([0,2000])
 
-    ax2.plot(np.arange(t0,nb_its,h)/365.25,E,'r')
-    ax2.set_title("Eccentricity over time")
+    ax2.plot(time_vector,E,'r')
+    ax2.set_title("Eccentricity")
     ax2.set_xlabel("years")
     ax2.set_ylabel("e")
+    ax2.set_xlim([0,2000])
 
-    ax3.plot(np.arange(t0,nb_its,h)/365.25,I,'b')
-    ax3.set_title("Inclination over time")
+    ax3.plot(time_vector,I,'b')
+    ax3.set_title("Inclination")
     ax3.set_xlabel("years")
-    ax3.set_ylabel("i")
+    ax3.set_ylabel("i [°]")
+    ax3.set_xlim([0,2000])
     plt.show()
 
 #%% Test with an asteroid at 2 UA from the Sun
@@ -445,10 +450,9 @@ G=(Gsi*(1/unitastro_m)**3)*(solarmass_kg)*(day_sec)**2
 ms=1.988e30
 mj=1.898e27
 
-t0=0
-h=90
-nb_its=(10000)*365
-nb_pts=int(np.round(nb_its/h))
+t_start= 0 * 365.25 # start year
+t_end = 9000 * 365.25
+h=10 # step time in days
 
 # Asteroid's orbital parameters on the 4 of november 2013
 a=5.454
@@ -463,19 +467,18 @@ U0=[list(r)]
 m1=1
 m2=mj/ms
 
-t0=0
 mat_masse=np.array([m1 , m2])
 
 planet=[Jupiter_ell,Mars,Earth]
 
 # %%
-U,A,E,I,P=Resolution(U0,t0,mat_masse,h,nb_its,planet)
+U,A,E,I,P=Resolution(U0,t_start,t_end,h,mat_masse,planet)
 
 # %%
 Plot_trajectory(U,P,planet,["Jupiter","Mars","Earth"])
 
 # %%
-Plot_orbital_param(A,E,I,nb_its,h,t0)
+Plot_orbital_param(A,E,I,t_start,t_end,h)
 
 # %%
 Plot_trajectory3d(U,P,planet,["Jupiter","Mars","Earth"])
